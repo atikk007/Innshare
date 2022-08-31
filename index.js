@@ -9,6 +9,9 @@ const progressContainer = document.querySelector('.progress-container');
 const progressBar = document.querySelector('.progress-bar')
 const percentDiv = document.querySelector('#percent');
 
+const fileURL = document.querySelector('#fileURL');
+const sharingContainer = document.querySelector('.sharing-container');
+
 dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
     if (!dropZone.classList.contains("dragged")) {
@@ -76,8 +79,11 @@ const updateProgress = (e) => {
 
 }
 
-const showLink = ({ file }) => {
-    console.log(file);
+const showLink = ({ file: url }) => {
+    console.log(url);
+    progressContainer.style.display = "none";
+    sharingContainer.style.display = "block";
+    fileURL.value = url;
 }
 
 /* uploadfile = async () => {

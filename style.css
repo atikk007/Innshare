@@ -129,3 +129,32 @@ body,
   transition: transform 0.25s linear;
   transform-origin: left;
 }
+
+.sharing-container {
+  width: var(--container-width);
+  margin-bottom: 10px;
+  display: none;
+}
+.sharing-container .input-container input {
+  width: 100%;
+  border: 2px dashed var(--border-color);
+  border-radius: 5px;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  font-size: 18px;
+  background: #f5fcff;
+  color: #000000a5;
+}
+
+.sharing-container .input-container {
+  position: relative;
+}
+
+.input-container img {
+  position: absolute;
+  height: 22px;
+  width: 30px;
+  right: 7px;
+  top: 12px;
+  background: #f7fdff;
+}
