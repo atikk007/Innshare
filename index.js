@@ -52,9 +52,10 @@ uploadFile = () => {
     const xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE)
+        if (xhr.readyState === XMLHttpRequest.DONE) {
             console.log(xhr.response);
-        showLink(JSON.parse(xhr.response));
+            showLink(JSON.parse(xhr.response))
+        }
     };
 
     xhr.upload.onprogress = updateProgress;
@@ -75,8 +76,8 @@ const updateProgress = (e) => {
 
 }
 
-const showLink = (file) => {
-
+const showLink = ({ file }) => {
+    console.log(file);
 }
 
 /* uploadfile = async () => {
