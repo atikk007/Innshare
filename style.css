@@ -134,6 +134,12 @@ body,
   width: var(--container-width);
   margin-bottom: 10px;
   display: none;
+  margin-bottom: 20px;
+}
+
+p.expire {
+  opacity: 0.7;
+  text-align: center;
 }
 .sharing-container .input-container input {
   width: 100%;
@@ -157,4 +163,5 @@ body,
   right: 7px;
   top: 12px;
   background: #f7fdff;
+  cursor: pointer;
 }

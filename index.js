@@ -9,8 +9,9 @@ const progressContainer = document.querySelector('.progress-container');
 const progressBar = document.querySelector('.progress-bar')
 const percentDiv = document.querySelector('#percent');
 
-const fileURL = document.querySelector('#fileURL');
+const fileURLInput = document.querySelector('#fileURL');
 const sharingContainer = document.querySelector('.sharing-container');
+const copyBtn = document.querySelector("#copy-btn");
 
 dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
@@ -43,6 +44,13 @@ fileInput.addEventListener("change", () => {
 
 browseBtn.addEventListener("click", () => {
     fileInput.click();
+})
+
+copyBtn.addEventListener("click", () => {
+    fileURLInput.select();
+    document.execCommand("copy");
+
+
 })
 
 uploadFile = () => {
@@ -83,7 +91,7 @@ const showLink = ({ file: url }) => {
     console.log(url);
     progressContainer.style.display = "none";
     sharingContainer.style.display = "block";
-    fileURL.value = url;
+    fileURLInput.value = url;
 }
 
 /* uploadfile = async () => {
