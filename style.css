@@ -167,6 +167,36 @@ p.send-email {
   cursor: pointer;
 }
 
+.input-container .cp-btn::before {
+  content: "copied";
+  position: absolute;
+  top: -40px;
+  right: 0px;
+  background-color: #5c81dc;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 15px;
+  color: white;
+  display: none;
+}
+
+.input-container .cp-btn::after {
+  content: "";
+  position: absolute;
+  top: -15px;
+  right: 25px;
+  width: 10px;
+  height: 5px;
+  background-color: #5c81dc;
+  transform: rotate(45deg);
+  display: none;
+}
+
+.input-container .cp-btn.active::before,
+.input-container .cp-btn.active::after {
+  display: block;
+  transition: all 5s ease-in-out;
+}
 /* .email-container {
   display: flex;
   align-items: center;

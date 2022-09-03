@@ -3,6 +3,7 @@ const fileInput = document.querySelector("#fileInput");
 const browseBtn = document.querySelector(".browseBtn");
 const host = "https://innshare.herokuapp.com/"
 const uploadURL = `${host}api/files`;
+const emailURL = `${host}api/files/send`;
 
 const progressContainer = document.querySelector('.progress-container');
 // const bgProgress = document.querySelector('.bg-progress');
@@ -12,6 +13,8 @@ const percentDiv = document.querySelector('#percent');
 const fileURLInput = document.querySelector('#fileURL');
 const sharingContainer = document.querySelector('.sharing-container');
 const copyBtn = document.querySelector("#copy-btn");
+const cpBtn = document.querySelector(".cp-btn");
+
 
 const emailForm = document.querySelector("#email-form");
 
@@ -51,6 +54,14 @@ browseBtn.addEventListener("click", () => {
 copyBtn.addEventListener("click", () => {
     fileURLInput.select();
     document.execCommand("copy");
+    cpBtn.classList.add("active");
+    window.getSelection().removeAllRanges();
+    setTimeout(() => {
+
+        cpBtn.classList.remove("active");
+
+    }, 2500)
+
 
 
 })
@@ -108,7 +119,19 @@ emailForm.addEventListener("submit", (e) => {
     };
 
     console.table(formData)
-})
+});
+
+fetch(emailURL, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+
+    },
+    body: JSON.stringify(formData),
+}).then((res) => res.json())
+    .then(data => {
+        console.log(data)
+    })
 
 /* uploadfile = async () => {
 
