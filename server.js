@@ -18,6 +18,10 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.get('', (req, res) => {
+    res.render('index', { title: "file sharing made easy" });
+});
+
 //Template Engine 
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
