@@ -142,7 +142,7 @@ emailForm.addEventListener("submit", (e) => {
     const url = fileURL.value;
 
     const formData = {
-        uuid: url.split("/").splice[4],
+        uuid: url.split("/").splice(-1, 1)[0],
         emailTo: emailForm.elements["to-email"].value,
         emailFrom: emailForm.elements["from-email"].value,
     };
