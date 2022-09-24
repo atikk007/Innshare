@@ -2,14 +2,9 @@ const express = require('express');
 const app = express();
 // const apiRoutes = require('./routes/files')
 const path = require('path');
-const cors = require('cors')
-
 const PORT = process.env.PORT || 3000;
-app.use(express.static('public'));
-app.use(express.json());
-const connectDB = require('./config/db')
-connectDB();
 
+const cors = require('cors')
 // Cors
 
 const corsOptions = {
@@ -17,6 +12,12 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions));
+app.use(express.static('public'));
+
+const connectDB = require('./config/db')
+connectDB();
+
+app.use(express.json());
 
 app.get('', (req, res) => {
     res.render('index', { title: "file sharing made easy" });
