@@ -1,22 +1,28 @@
-const nodemailer = require("nodemailer");
-const dotenv = require('dotenv').config();
-module.exports = async ({ from, to, subject, text, html }) => {
-    let transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: process.env.SMTP_PORT,
-        secure: false, // true for 465, false for other ports
-        auth: {
-            user: process.env.MAIL_USER, // generated ethereal user
-            pass: process.env.MAIL_PASS, // generated ethereal password
-        },
-    });
+const nodemailer = require('nodemailer');
 
-    // send mail with defined transport object
-    let info = await transporter.sendMail({
-        from: 'inShare <atikmansuri619@gmail.com>', // sender address
-        to, // list of receivers
-        subject: subject, // Subject line
-        text: text, // plain text body
-        html: html, // html body
-    });
+async function sendMail({ from, to, subject, text, html }) {
+  let transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT,
+    secure: false,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASSWORD
+    }
+  })
+
+  let info = await transporter.sendMail({
+    from: 'inshare <atikmansuri619@gmail.com>',
+    to, /* == to: to in js if key and value are same then we can just write it once #destructuring */
+    subject: subject,
+    text: text,
+    html: html,
+
+  });
+
+
+  console.log(info)
 }
+
+
+module.exports = sendMail;
