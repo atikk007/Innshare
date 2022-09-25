@@ -19,7 +19,6 @@ const connectDB = require('./config/db')
 connectDB();
 
 app.use(express.json());
-app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.render('index', { title: "file sharing made easy" });
