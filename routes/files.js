@@ -1,7 +1,4 @@
 const router = require('express').Router();
-/* const express = require('express');
-const router = express.Router(); 
-Both are same */
 const multer = require('multer');
 const path = require('path');
 const File = require('../models/file');
@@ -30,13 +27,11 @@ router.post('/', (req, res) => {
         });
         const response = await file.save();
         res.json({ file: `${process.env.APP_BASE_URL}/files/${response.uuid}` });
-        // http://localhost:3000/files/2343hjhjfshjah-123343hjhj this is the kind of link upper text will concatenate.
     });
 });
 
 router.post('/send', async (req, res) => {
-    console.log(req.body);
-    const { uuid, emailTo, emailFrom } = req.body;
+    const { uuid, emailTo, emailFrom, expiresIn } = req.body;
     if (!uuid || !emailTo || !emailFrom) {
         return res.status(422).send({ error: 'All fields are required except expiry.' });
     }
