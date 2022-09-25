@@ -20,8 +20,12 @@ connectDB();
 
 app.use(express.json());
 
-app.get('', (req, res) => {
+app.get('/', (req, res) => {
     res.render('index', { title: "file sharing made easy" });
+});
+
+app.get('', (req, res) => {
+    res.redirect('/');
 });
 
 //Template Engine 
