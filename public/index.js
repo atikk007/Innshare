@@ -1,173 +1,147 @@
-const dropZone = document.querySelector(".drop-zone");
-const fileInput = document.querySelector("#fileInput");
-const browseBtn = document.querySelector("#browseBtn");
+const fileInput = document.querySelector('#fileInput');
+const browseBtn = document.querySelector('#browseBtn');
+const fileDropZone = document.querySelector('.file-drop-zone');
+const progressContEl = document.querySelector('.progress-container');
+const progressBgEl = document.querySelector('.progress-background');
+const percentCountEl = document.querySelector('.percentCount');
+const progressBar = document.querySelector('.progress-bar');
+const resultContainer = document.querySelector('.result-container');
+const resultInput = document.querySelector('#resultInput');
+const copyIcon = document.querySelector('.copy-box');
+const emailForm = document.querySelector('#email-form');
+const successAlertEl = document.querySelector('.success-alert');
+let toastTimer = null;
 
-// const bgProgress = document.querySelector(".bg-progress");
-const progressPercent = document.querySelector("#progressPercent");
-const progressContainer = document.querySelector(".progress-container");
-const progressBar = document.querySelector(".progress-bar");
-const status = document.querySelector(".status");
+const uploadUrl = '/api/files';
+const emailUrl = '/api/files/send';
 
-const sharingContainer = document.querySelector(".sharing-container");
-const copyURLBtn = document.querySelector("#copyURLBtn");
-const fileURL = document.querySelector("#fileURL");
-const emailForm = document.querySelector("#emailForm");
-
-const toast = document.querySelector(".toast");
-
-const baseURL = "https://inshare-ak.herokuapp.com";
-const uploadURL = `${baseURL}/api/files`;
-const emailURL = `${baseURL}/api/files/send`;
-
-const maxAllowedSize = 100 * 1024 * 1024; //100mb
-
-
-browseBtn.addEventListener("click", () => {
+function browseFile() {
     fileInput.click();
-});
+};
 
-dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    //   console.log("dropped", e.dataTransfer.files[0].name);
-    const files = e.dataTransfer.files;
-    if (files.length === 1) {
-        if (files[0].size < maxAllowedSize) {
-            fileInput.files = files;
-            uploadFile();
-        } else {
-            showToast("Max file size is 100MB");
-        }
-    } else if (files.length > 1) {
-        showToast("You can't upload multiple files");
-    }
-    dropZone.classList.remove("dragged");
-});
-
-dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragged");
-
-    // console.log("dropping file");
-});
-
-dropZone.addEventListener("dragleave", (e) => {
-    dropZone.classList.remove("dragged");
-
-    console.log("drag ended");
-});
-
-// file input change and uploader
-fileInput.addEventListener("change", () => {
-    if (fileInput.files[0].size > maxAllowedSize) {
-        showToast("Max file size is 100MB");
-        fileInput.value = ""; // reset the input
-        return;
-    }
-    uploadFile();
-});
-
-// sharing container listenrs
-copyURLBtn.addEventListener("click", () => {
-    fileURL.select();
-    document.execCommand("copy");
-    showToast("Copied to clipboard");
-});
-
-fileURL.addEventListener("click", () => {
-    fileURL.select();
-});
-
-const uploadFile = () => {
-    console.log("file added uploading");
-
-    files = fileInput.files;
+function uploadFile(file) {
+    // console.log(file);
     const formData = new FormData();
-    formData.append("myfile", files[0]);
+    formData.append('myFile', file);
 
-    //show the uploader
-    progressContainer.style.display = "block";
-
-    // upload file
     const xhr = new XMLHttpRequest();
-
-    // listen for upload progress
-    xhr.upload.onprogress = function (event) {
-        // find the percentage of uploaded
-        let percent = Math.round((100 * event.loaded) / event.total);
-        progressPercent.innerText = percent;
-        const scaleX = `scaleX(${percent / 100})`;
-        // bgProgress.style.transform = scaleX;
-        progressBar.style.transform = scaleX;
+    xhr.onreadystatechange = () => {
+        //console.log(xhr.readyState);
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            //console.log(JSON.parse(xhr.response));
+            showFileLink(JSON.parse(xhr.response));
+        };
     };
 
-    // handle error
-    xhr.upload.onerror = function () {
-        showToast(`Error in upload: ${xhr.status}.`);
-        fileInput.value = ""; // reset the input
+    xhr.upload.onprogress = updateProgress;
+    xhr.upload.onerror = () => {
+        showSuccessAlert(`Error in upload: ${xhr.statusText}`);
     };
 
-    // listen for response which will give the link
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
-            onFileUploadSuccess(xhr.responseText);
-        }
-    };
-
-    xhr.open("POST", uploadURL);
+    xhr.open('POST', uploadUrl);
     xhr.send(formData);
 };
 
-const onFileUploadSuccess = (res) => {
-    fileInput.value = ""; // reset the input
-    status.innerText = "Uploaded";
-
-    // remove the disabled attribute from form btn & make text send
-    emailForm[2].removeAttribute("disabled");
-    emailForm[2].innerText = "Send";
-    progressContainer.style.display = "none"; // hide the box
-
-    const { file: url } = JSON.parse(res);
-    console.log(url);
-    sharingContainer.style.display = "block";
-    fileURL.value = url;
+function updateProgress(e) {
+    const percentage = Math.round((e.loaded / e.total) * 100);
+    // console.log(percentage);
+    progressContEl.style.display = 'block';
+    progressBgEl.style.width = `${percentage}%`;
+    percentCountEl.innerText = `${percentage}%`;
+    progressBar.style.width = `${percentage}%`;
 };
 
-emailForm.addEventListener("submit", (e) => {
-    e.preventDefault(); // stop submission
+function showFileLink({ file }) {
+    //console.log(file);
+    progressContEl.style.display = 'none';
+    resultContainer.style.display = 'block';
+    resultInput.value = file;
+    emailForm[2].removeAttribute('disabled');
+};
 
-    // disable the button
-    emailForm[2].setAttribute("disabled", "true");
-    emailForm[2].innerText = "Sending";
+function copyFileUrl() {
+    resultInput.select();
+    document.execCommand('copy');
+    showSuccessAlert('Copied to Clipboard');
+};
 
-    const url = fileURL.value;
+function showSuccessAlert(successMsg) {
+    successAlertEl.innerText = successMsg;
+    successAlertEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => successAlertEl.classList.remove('show'), 2000);
+};
 
-    const formData = {
-        uuid: url.split("/").splice(-1, 1)[0],
-        emailTo: emailForm.elements["to-email"].value,
-        emailFrom: emailForm.elements["from-email"].value,
+fileInput.addEventListener('change', () => {
+    const FILE = fileInput.files[0];
+    //console.log(FILE);
+    uploadFile(FILE);
+});
+
+fileDropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!fileDropZone.classList.contains('dragged')) {
+        fileDropZone.classList.add('dragged');
     };
-    console.log(formData);
-    fetch(emailURL, {
+});
+
+fileDropZone.addEventListener('dragleave', () => {
+    if (fileDropZone.classList.contains('dragged')) {
+        fileDropZone.classList.remove('dragged');
+    };
+});
+
+fileDropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (fileDropZone.classList.contains('dragged')) {
+        fileDropZone.classList.remove('dragged');
+    };
+    const files = e.dataTransfer.files;
+    //console.log(files);
+    if (files.length > 0) {
+        fileInput.files = files;
+        //console.log(fileInput.files[0]);
+        uploadFile(fileInput.files[0]);
+    };
+});
+
+browseBtn.addEventListener('click', browseFile);
+copyIcon.addEventListener('click', copyFileUrl);
+
+emailForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    //console.log('submited');
+    const fileUrl = resultInput.value;
+    // console.log(fileUrl);
+    const uuid = fileUrl.split('/')[4];
+    // console.log(uuid);
+
+    const formObject = {
+        uuid: uuid,
+        emailFrom: emailForm.elements['emailFrom'].value,
+        emailTo: emailForm.elements['emailTo'].value
+    };
+    // console.log(formObject);
+    emailForm[0].value = '';
+    emailForm[1].value = '';
+    emailForm[2].setAttribute('disabled', 'true');
+
+    // Sending POST req using fetch.
+    fetch(emailUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formObject)
     })
         .then((res) => res.json())
         .then((data) => {
+            // console.log(data);
             if (data.success) {
-                showToast("Email Sent");
-                sharingContainer.style.display = "none"; // hide the box
-            }
-        }).catch((err) => console.log(err));
+                resultContainer.style.display = 'none';
+                showSuccessAlert('Email Sent');
+            };
+        })
+        .catch((err) => console.log(err));
 });
 
-let toastTimer;
-// the toast function
-const showToast = (msg) => {
-    clearTimeout(toastTimer);
-    toast.innerText = msg;
-    toast.classList.add("show");
-    toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2000);
-};
+
+
