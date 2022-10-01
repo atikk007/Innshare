@@ -158,7 +158,7 @@ emailForm.addEventListener("submit", (e) => {
                 showToast("Email Sent");
                 sharingContainer.style.display = "none"; // hide the box
             }
-        }).catch((err) => console.log(err));
+        }).catch((err) => console.log({ err: "Post req returned this error" }));
 });
 
 let toastTimer;
