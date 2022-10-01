@@ -30,7 +30,7 @@ function uploadFile(file) {
         //console.log(xhr.readyState);
         if (xhr.readyState === XMLHttpRequest.DONE) {
             //console.log(JSON.parse(xhr.response));
-            showFileLink(JSON.parse(xhr.response));
+            showFileLink(xhr.responseText);
         };
     };
 
@@ -43,6 +43,14 @@ function uploadFile(file) {
     xhr.send(formData);
 };
 
+function showFileLink({ file }) {
+    //console.log(file);
+    progressContEl.style.display = 'none';
+    resultContainer.style.display = 'block';
+    resultInput.value = file;
+    emailForm[2].removeAttribute('disabled');
+};
+
 function updateProgress(e) {
     const percentage = Math.round((e.loaded / e.total) * 100);
     // console.log(percentage);
@@ -52,13 +60,7 @@ function updateProgress(e) {
     progressBar.style.width = `${percentage}%`;
 };
 
-function showFileLink({ file }) {
-    //console.log(file);
-    progressContEl.style.display = 'none';
-    resultContainer.style.display = 'block';
-    resultInput.value = file;
-    emailForm[2].removeAttribute('disabled');
-};
+
 
 function copyFileUrl() {
     resultInput.select();
