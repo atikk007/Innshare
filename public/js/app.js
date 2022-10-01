@@ -30,7 +30,8 @@ function uploadFile(file) {
         //console.log(xhr.readyState);
         if (xhr.readyState === XMLHttpRequest.DONE) {
             //console.log(JSON.parse(xhr.response));
-            showFileLink(xhr.responseText);
+            showFileLink(JSON.parse(xhr.response));
+            console.log(xhr.response);
         };
     };
 
@@ -50,7 +51,6 @@ function showFileLink({ file }) {
     resultInput.value = file;
     emailForm[2].removeAttribute('disabled');
 };
-
 function updateProgress(e) {
     const percentage = Math.round((e.loaded / e.total) * 100);
     // console.log(percentage);
