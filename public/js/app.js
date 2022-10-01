@@ -12,7 +12,7 @@ const emailForm = document.querySelector('#email-form');
 const successAlertEl = document.querySelector('.success-alert');
 let toastTimer = null;
 
-const baseURL = "https://inshare-app.herokuapp.com";
+const baseURL = "https://inshare-ak.herokuapp.com";
 const uploadUrl = `${baseURL}/api/files`;
 const emailUrl = `${baseURL}/api/files/send`;
 
