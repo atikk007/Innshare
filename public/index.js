@@ -133,6 +133,7 @@ const onFileUploadSuccess = (res) => {
 };
 
 emailForm.addEventListener("submit", (e) => {
+    console.log({ e: "submit e" });
     e.preventDefault(); // stop submission
 
     // disable the button
@@ -146,18 +147,20 @@ emailForm.addEventListener("submit", (e) => {
         emailTo: emailForm.elements["to-email"].value,
         emailFrom: emailForm.elements["from-email"].value,
     };
-    console.log(formData);
+    console.log(emailURL);
     fetch(emailURL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
     })
-        .then((res) => res.json())
+        .then((res) => {
+            res.json()
+        })
         .then((data) => {
-            if (data.success) {
-                showToast("Email Sent");
-                sharingContainer.style.display = "none"; // hide the box
-            }
+            // if (data.success) {
+            showToast("Email Sent");
+            sharingContainer.style.display = "none"; // hide the box
+            // }
         }).catch((err) => console.log({ err: "Post req returned this error" }));
 });
 
