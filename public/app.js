@@ -15,9 +15,9 @@ const emailForm = document.querySelector("#emailForm");
 
 const toast = document.querySelector(".toast");
 
-const baseURL = "https://inshare-ak.up.railway.app";
-const uploadURL = `${baseURL}/api/files`;
-const emailURL = `${baseURL}/api/files/send`;
+const baseURL = "https://inshare-app.onrender.com";
+const uploadUrl = `${baseURL}/api/files`;
+const emailUrl = `${baseURL}/api/files/send`;
 
 const maxAllowedSize = 100 * 1024 * 1024; //100mb
 
@@ -113,7 +113,7 @@ const uploadFile = () => {
         }
     };
 
-    xhr.open("POST", uploadURL);
+    xhr.open("POST", uploadUrl);
     xhr.send(formData);
 };
 
@@ -147,8 +147,8 @@ emailForm.addEventListener("submit", (e) => {
         emailTo: emailForm.elements["to-email"].value,
         emailFrom: emailForm.elements["from-email"].value,
     };
-    console.log({ emailURL, formData });
-    fetch(emailURL, {
+    console.log({ emailUrl, formData });
+    fetch(emailUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
