@@ -15,7 +15,7 @@ const emailForm = document.querySelector("#emailForm");
 
 const toast = document.querySelector(".toast");
 
-const baseURL = "https://inshare-ak.herokuapp.com";
+const baseURL = "https://inshare-atik.onrender.com";
 const uploadUrl = `${baseURL}/api/files`;
 const emailUrl = `${baseURL}/api/files/send`;
 
